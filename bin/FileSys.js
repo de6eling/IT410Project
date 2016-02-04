@@ -99,24 +99,22 @@ exports.readFile = function (path) {
 
 exports.readFiles = function (paths) {
 
-    return new Promise(function (resolve, reject) {
-        var files= {};
-        var contentArr= [];
-        paths.forEach(function(path){
-            exports.readFile(path)
-                .then(function (resolution) {
-                    var contents = files[Path.basename(path)] = resolution;
-                    contentArr.push(contents);
-                })
+    if( !Array.isArray(paths))
+        return Promise.reject("not an array");
 
+    var promises = [];
 
-        })
-        return Promise.all(contentArr)
-            .then(function() {
-                return files;
+    paths.forEach(function(path){
+        promises.push(exports.readFile(path));
+    });
+
+    return Promise.all(promises)
+        .then(function(resolution) {
+            var map = {};
+            paths.forEach(function(path, index){
+                map[path] = resolution[index];
             })
-
-
-    })
+            return map;
+        });
 
 };
