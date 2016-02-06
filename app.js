@@ -59,4 +59,6 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-app.use(express.static(process.cwd()));
+var fullPath = path.resolve(__dirname, './routes');
+console.log(fullPath);
+app.use('/', express.static(fullPath));
