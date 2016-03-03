@@ -41,7 +41,7 @@ gulp.task('autoprefixer', function () {
             browsers: ['last 2 versions'],
             cascade: false
         }))
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('./dist'));
 });
 
 /*
@@ -49,7 +49,7 @@ gulp.task('autoprefixer', function () {
  *
  */
 
-gulp.task('default', function () {
+gulp.task('minicss', function () {
     return gulp.src('./src/css/main.css')
         .pipe(changed('./dist'))
         .pipe(csso())
@@ -61,9 +61,9 @@ gulp.task('default', function () {
  *
  */
 
-gulp.task('minify', function() {
+gulp.task('minihtml', function() {
     return gulp.src('./src/*.html')
-        .pipe(changed('dist'))
+        .pipe(changed('./dist'))
         .pipe(htmlmin({collapseWhitespace: true}))
         .pipe(gulp.dest('dist'))
 });
@@ -73,15 +73,15 @@ gulp.task('minify', function() {
  *
  */
 
-gulp.task('default', function () {
+gulp.task('miniimage', function () {
     return gulp.src('./src/images/*')
-        .pipe(changed('dist'))
+        .pipe(changed('./dist'))
         .pipe(imagemin({
             progressive: true,
             svgoPlugins: [{removeViewBox: false}],
             use: [pngquant()]
         }))
-        .pipe(gulp.dest('dist/images'));
+        .pipe(gulp.dest('./dist/images'));
 });
 
 
@@ -90,11 +90,11 @@ gulp.task('default', function () {
  *
  */
 
-gulp.task('compress', function() {
+gulp.task('minijs', function() {
     return gulp.src('./src/js/*.js')
-        .pipe(changed('dist'))
+        .pipe(changed('./dist'))
         .pipe(uglify())
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('./dist'));
 });
 
 /*
@@ -102,9 +102,11 @@ gulp.task('compress', function() {
  *
  */
 
-gulp.task('default', ['compress'], function () {
+gulp.task('unmini', ['compress'], function () {
     return gulp.src('./src/*.html')
-        .pipe(changed('dist'))
+        .pipe(changed('./dist'))
         .pipe(useref())
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('./dist'));
 });
+
+gulp.task('default', ['sass', 'autoprefixer', 'minicss', 'minihtml', 'miniimage', 'minijs', 'unmini']);
